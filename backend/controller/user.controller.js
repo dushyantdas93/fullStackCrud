@@ -22,12 +22,13 @@ export const createUser = async (req,res)=>{
     try {
        const exits = await User.findOne({email})
        if(exits){
-        res.json({success:false,msg:"user allready Exits"})
+        return res.json({success:false,msg:"user allready Exits"})
        }
 
        const create = await User.create({name,email})
        if(create){
-        res.json({success:true,msg:"user created successfully"})
+        console.log("hello");
+        res.json({success:true,msg:"user created successfully",data:create})  
        }
     } catch (error) {
         res.json({success:true,msg:"user not found"})
@@ -57,7 +58,7 @@ export const updateUser = async (req,res)=>{
             res.json({success:false,msg:"user not update successfully"})
         }
         else{
-            res.json({success:true,msg:"created  users successfully",data:update})
+            res.json({success:true,msg:"updated  user successfully",data:update})
 
         }
     } catch (error) {

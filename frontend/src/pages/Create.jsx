@@ -3,27 +3,32 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 const Create = () => {
+    const [user,setUser] = useState({name:'',email:''})
     const navigate = useNavigate()
-    const [user,setUser]= useState({name:"",email:""})
+const handleChange = (e)=>{
+    setUser({...user,[e.target.name]:e.target.value})
+}
 
-    const hdlChange = (e)=>{
-        setUser({...user,[e.target.name]:e.target.value})
-    }
-    const handleSubmit = async(e)=>{
-        e.preventDefault()
-        await axios.post("http://localhost:8000/api/v1/create",user)
-        navigate("/")
+const handleSubmit  = async (e)=>{
+    e.preventDefault()
+    const createUser = await axios.post("http://localhost:8000/api/v1/create",user)
+    navigate("/")
 
-    }
+}
+
   return (
     <div>
-        <Link to={"/"}><button>BACK TO HOME</button></Link>
 
-        <form action="" onSubmit={handleSubmit} >
-            <input type="text" placeholder='Enter your name' name="name" required  onChange={hdlChange}/>
-            <input type="email" placeholder='Enter your email' name="email" required  onChange={hdlChange}/>
-            <button type='submit'>ADD</button>
-        </form>
+<Link to={"/"}><button>back to home</button></Link>
+
+<form action="" onSubmit={handleSubmit}>
+    <input type="text" name='name' value={user.name} placeholder='enter your name' onChange={handleChange} />
+    <input type="email" name='email' value={user.email} placeholder='enter your email' onChange={handleChange} />
+    <button type='submit'>add</button>
+</form>
+
+
+
     </div>
   )
 }

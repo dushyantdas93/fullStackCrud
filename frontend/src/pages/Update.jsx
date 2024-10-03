@@ -1,45 +1,63 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const Update = () => {
-    const navigate = useNavigate()
-    const {id} = useParams()
-    const [user,setUser] = useState({name:"",email:""})
-    useEffect(()=>{
-    
-        ;(async()=>{
-           const {data} = await axios.get("http://localhost:8000/api/v1/getAll")
-           
-          setUser(data.data[id])
-          console.log(user)
-           
-        })()
-      },[])
-   
+  const { id } = useParams();
+  const [user, setUser] = useState({ name: "", email: "" });
+  const getuser = async () => {
+    const { data } = await axios.get(`http://localhost:8000/api/v1/get/${id}`);
 
+    setUser({
+      name: data.data.name,
+      email: data.data.email,
+    });
+  };
+  
+  useEffect(()=>{
+    getuser();
+  },[])
 
-    const hdlChange = (e)=>{
-        setUser({...user,[e.target.name]:e.target.value})
-    }
-    const handleSubmit = async(e)=>{
-        e.preventDefault()
-        const {data} = await axios.patch(`http://localhost:8000/api/v1/update/${user._id}`,{name:user.name,email:user.email})
-    // console.log(data)
-        navigate("/")
+  const navigate = useNavigate();
+  const handleChange = (e) => {
+    console.log(e.target.name, e.target.value);
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
 
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const createUser = await axios.patch(
+      `http://localhost:8000/api/v1/Update/${id}`,
+      user
+    );
+    navigate("/");
+  };
+
   return (
     <div>
-        <Link to={"/"}><button>BACK TO HOME</button></Link><Link to={"/create"}><button>ADD</button></Link>
+      <Link to={"/"}>
+        <button>back to home</button>
+      </Link>
 
-        <form action="" onSubmit={handleSubmit} >
-            <input type="text" placeholder='Enter your name' value={user.name}  name="name" required  onChange={hdlChange}/>
-            <input type="email" placeholder='Enter your email' value={user.email}  name="email" required  onChange={hdlChange}/>
-            <button type='submit'>ADD</button>
-        </form>
+      <form action="" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="name"
+          value={user.name}
+          placeholder="enter your name"
+          onChange={handleChange}
+        />
+        <input
+          type="email"
+          name="email"
+          value={user.email}
+          placeholder="enter your email"
+          onChange={handleChange}
+        />
+        <button type="submit">update</button>
+      </form>
     </div>
-  )
-}
+  );
+};
 
-export default Update
+export default Update;
